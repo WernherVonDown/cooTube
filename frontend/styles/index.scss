@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #222 url('https://unsplash.it/1920/1080/?random') no-repeat;
+}
+
+.navbar {
+    display: flex;
+    background: #ef5350;;
+    width: 100%;
+    padding: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+
+    &-leftside, &-rightside {
+        display: flex;
+    }
+
+    .logo {
+        display: flex;
+        font-size: 2rem;
+        font-family: roboto;
+        font-weight: bold;
+        color: #424242;
+    }
+
+    .navbar-button {
+        background-color: #e0e0e0;
+        color: unset;
+    }
+}
+
+.mainContainerWrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    align-items: center;
+}
+
+.content {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    justify-content: center;
+}
+
+.formWrapper {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    padding: 1rem;
+    border-radius: 5px;
+    background: #f7faff;
+    color: black;
+    font-size: medium;
+    height: fit-content;
+    margin-top: 10%;
+}
+
+.roomsWrapper {
+    display: flex;
+    padding: 1rem;
+    background: #f7faff;
+    flex-direction: column;
+    color: black;
+    font-size: medium;
+    height: fit-content;
+}
+
+.marginLeftRight {
+    margin: 0 0.5rem !important;
+}
