@@ -27,7 +27,7 @@ export class AuthService {
     if (isPasswordValid) {
       const users = await this.roomsService.addUserToRoom(userName, socketId, roomId);
       // if (users.find(u => u.userName === userName)) userName += `1`;
-      return { success: true, users, userName }
+      return { success: true, users, userName, socketId }
     } else {
       return { success: false };
     }
@@ -38,9 +38,9 @@ export class AuthService {
     const user = await this.usersService.findOne(loginDto.email);
     console.log('vlalidateUser', user)
     if (user) {
-      const { password, ...result } = user;
+      const { password, userName } = user;
       if (await bcrypt.compare(loginDto.password, password)) {
-        return result;
+        return {userName};
       }
     }
     return null;

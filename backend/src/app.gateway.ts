@@ -10,14 +10,23 @@ export class AppGateway {
     @SubscribeMessage('enterRoom')
     async handleEnterRoom(@ConnectedSocket() client, @MessageBody() data): Promise<void> {
         const { roomId } = data;
-        console.log('EEEEEEEEEEEEEE', data)
         const res = await this.authService.validateUserInRoom({ socketId: client.id, ...data })
+        console.log('EEEEEEEEEEEEEE', data, res)
         if (res.success) {
             client.join(roomId);
             this.server.to(roomId).emit('users', res.users);
+            this.server.to(roomId).emit('user:join', res);
         }
         client.emit('enterRoom', res);
 
+    }
+
+    @SubscribeMessage('videoChat')
+    async handleVideoChat(@ConnectedSocket() client, @MessageBody() data): Promise<void> {
+        const { target } = data;
+        if (target) {
+            this.server.to(target).emit('videoChat', data)
+        }
     }
 
     @SubscribeMessage('disconnect')

@@ -19,14 +19,19 @@ export class LoginController {
         @Body() loginDto: LoginDto): Promise <any>   {
             console.log('LOGIN', loginDto)
         const result = await this.authService.validateUser(loginDto);
+        console.log('RESSSULET', result)
         if (result) {
             const jwt = await this.jwtService.signAsync({
                 id: result.id
             })
             response.cookie('jwt', jwt, {httpOnly: true})
-
+            const { userName } = result;
+            console.log('EEEE', userName)
             return {
-                success: true
+                success: true,
+                user: {
+                    userName
+                }
             };
         }
         return {

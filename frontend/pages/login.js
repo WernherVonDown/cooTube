@@ -1,33 +1,19 @@
-import { useState } from "react";
-// import useInput from "../hooks/useInput";
-// import axios from "axios";
-// import config from "../config";
-import { useRouter } from 'next/router'
+import { useContext } from "react";
 import { Input, Button, Checkbox } from "@material-ui/core";
 import useInput from "../components/hooks/useInput";
 import validateEmail from "../helpers/validateEmail";
-import axios from "axios";
-import config from "../config";
 import Header from "../components/header";
+import AuthContext from "../stores/authContext";
 
 const Login = () => {
-    const router = useRouter();
     const email = useInput('');
     const password = useInput('');
+    const { login } = useContext(AuthContext);
 
-    const login = async () => {
+    const checkLoginData = async () => {
         if (email.value.length && password.value.length) {
             if (validateEmail(email.value)) {
-                const result = await axios.post(`${config.serverAdress}/login`, {
-                    email: email.value,
-                    password: password.value
-                });
-                console.log('RES', result);
-                if (!result.data.success) {
-                    alert('Invalid email or password')
-                } else {
-                    router.push('/')
-                }
+                login(email.value, password.value)
             } else {
                 alert('Email is not valid')
             }
@@ -37,22 +23,20 @@ const Login = () => {
     }
 
     return (
-        <Header isLogin={true}>
-            <div className="formWrapper">
+        <div className="formWrapper">
+            <div>
+                <h2>Login</h2>
                 <div>
-                    <h2>Login</h2>
-                    <div>
-                        <div>Email</div>
-                        <div><Input {...email} type="text" /></div>
-                    </div>
-                    <div>
-                        <div>Password</div>
-                        <div><Input {...password} type="password" /></div>
-                    </div>
+                    <div>Email</div>
+                    <div><Input {...email} type="text" /></div>
                 </div>
-                <div><Button variant="contained" onClick={login}>Login</Button></div>
+                <div>
+                    <div>Password</div>
+                    <div><Input {...password} type="password" /></div>
+                </div>
             </div>
-        </Header>
+            <div><Button variant="contained" onClick={checkLoginData}>Login</Button></div>
+        </div>
     )
 }
 

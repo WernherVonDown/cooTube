@@ -47,30 +47,28 @@ const Register = () => {
     }
 
     return (
-        <Header isRegister={true}>
-            <div className="formWrapper">
+        <div className="formWrapper">
+            <div>
+                <h2>Register</h2>
                 <div>
-                    <h2>Register</h2>
-                    <div>
-                        <div>Email</div>
-                        <div><Input {...email} Input type="text" /></div>
-                    </div>
-                    <div>
-                        <div>UserName</div>
-                        <div><Input {...userName} type="text" /></div>
-                    </div>
-                    <div>
-                        <div>Password</div>
-                        <div><Input {...password1} type="password" /></div>
-                    </div>
-                    <div>
-                        <div>Confirm your password</div>
-                        <div><Input {...password2} type="password" /></div>
-                    </div>
+                    <div>Email</div>
+                    <div><Input {...email} Input type="text" /></div>
                 </div>
-                <div><Button variant="contained" onClick={register}>register</Button></div>
+                <div>
+                    <div>UserName</div>
+                    <div><Input {...userName} type="text" /></div>
+                </div>
+                <div>
+                    <div>Password</div>
+                    <div><Input {...password1} type="password" /></div>
+                </div>
+                <div>
+                    <div>Confirm your password</div>
+                    <div><Input {...password2} type="password" /></div>
+                </div>
             </div>
-        </Header>
+            <div><Button variant="contained" onClick={register}>register</Button></div>
+        </div>
     )
 }
 

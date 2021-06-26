@@ -1,7 +1,9 @@
 import useInput from "../hooks/useInput";
-
+import { useContext } from "react";
+import AuthContext from "../../stores/authContext";
 const Login = ({ hasPassword, enterRoom }) => {
-    const userName = useInput('');
+    const {logged, user} = useContext(AuthContext);
+    const userName = useInput(logged ? user.userName : '');
     const password = useInput('');
 
     const validateData = () => {

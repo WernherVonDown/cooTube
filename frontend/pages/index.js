@@ -4,21 +4,19 @@ import Header from "../components/header";
 
 const Index = () => {
     return (
-        <Header>
-            <div className="mainContainerWrapper">
-                <CreateRoom />
-            </div>
-        </Header>
+        <div className="mainContainerWrapper">
+            <CreateRoom />
+        </div>
     )
 }
 
 export default Index;
 
-export async function getStaticProps(context) {
-    const res = await axios.get(`${config.serverAdress}/api/me`)
-    const data = res.data;
+// export async function getStaticProps(context) {
+//     const res = await axios.get(`${config.serverAdress}/api/me`)
+//     const data = res.data;
 
-    return {
-        props: { rooms: data || [] }, // will be passed to the page component as props
-    }
-}
+//     return {
+//         props: { rooms: data || [] }, // will be passed to the page component as props
+//     }
+// }

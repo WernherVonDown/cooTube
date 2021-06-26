@@ -8,21 +8,19 @@ import Header from '../components/header';
 const Rooms = ({ rooms }) => {
     console.log(rooms)
     return (
-        <Header>
-            <div className="roomsWrapper">
-                Rooms:
-                <div>
-                    <ul>
-                        {rooms.map(r => {
-                            return <li key={r.roomId}>
-                                <A href={`/room/${r.roomId}`} text={r.roomName} />
-                                <div>{r.description}</div>
-                            </li>
-                        })}
-                    </ul>
-                </div>
+        <div className="roomsWrapper">
+            Rooms:
+            <div>
+                <ul>
+                    {rooms.map(r => {
+                        return <li key={r.roomId}>
+                            <A href={`/room/${r.roomId}`} text={r.roomName} />
+                            <div>{r.description}</div>
+                        </li>
+                    })}
+                </ul>
             </div>
-        </Header>
+        </div>
     )
 }
 
