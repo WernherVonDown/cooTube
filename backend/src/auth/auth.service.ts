@@ -33,14 +33,18 @@ export class AuthService {
     }
   }
 
+  async validateUserId(id: string): Promise<any> {
+    const user = await this.usersService.findOneById(id);
+    return user;
+  }
 
   async validateUser(loginDto: LoginDto): Promise<any> {
     const user = await this.usersService.findOne(loginDto.email);
     console.log('vlalidateUser', user)
     if (user) {
-      const { password, userName } = user;
+      const { password, userName, _id, email } = user;
       if (await bcrypt.compare(loginDto.password, password)) {
-        return {userName};
+        return {userName, _id, email};
       }
     }
     return null;

@@ -3,74 +3,96 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { socket } from '../../socket';
 import PeerConnectionHelper from '../../helpers/peerConnectionHelper';
 import AuthContext from '../../stores/authContext';
+import useForceUpdate from '../hooks/useForceUpdate';
 
-const peerConnectionsStore = {}
+const peerConnectionsStore = {};
+const remoteStreamsStore = {}
 
-const Main = ({roomId, users}) => {
-   //const [users, setUsers] = useState([]);
+const Video = ({ videoId, stream, muted , userName}) => {
+    const videoRef = useRef();
+    useEffect(() => {
+        if (videoRef.current)
+            videoRef.current.srcObject = stream;
+    }, [])
+
+    return (
+        <div className='videoWrapper'>
+            <video muted={muted} ref={videoRef} id={videoId} autoPlay />
+            <div className='videoUserName'>{userName}</div>
+        </div>
+    )
+    
+}
+
+const Main = ({ roomId, users }) => {
     const [localStream, setLocalStream] = useState(null);
     const localVideo = useRef();
     const { user: me } = useContext(AuthContext)
+    const forceUpdate = useForceUpdate();
     console.log(users)
-
-
     const sendToServer = (data) => {
         console.log('send', data)
         socket.emit('videoChat', data)
     }
     const startCall = async (socketId) => {
         const pc = getPeerConnection(socketId);
-        await getLocalStream()
+        pc.addStream(localStream || await getLocalStream())
+
         const sdp = await pc.createOffer();
-     
+
         const callData = {
             source: me.socketId,
             target: socketId,
             type: "video-offer",
             sdp
-          }
-          sendToServer(callData)
+        }
+        sendToServer(callData)
     }
 
-    const answerCall = async ({source, sdp}) => {
+    const answerCall = async ({ source, sdp }) => {
         const pc = getPeerConnection(source);
         pc.setRemoteDescription(sdp)
-        await getLocalStream()
+        pc.addStream(localStream || await getLocalStream())
         const sdpAnswer = await pc.handleAnswer(sdp);
-        
+
         const answerData = {
             target: source,
             source: me.socketId,
             type: "video-answer",
             sdp: sdpAnswer
-          }
-          sendToServer(answerData);
+        }
+        sendToServer(answerData);
     }
 
-    const handleTrackEvent = (socektId, e) => {
-        console.log('handleTrackEvent', e);
+    const handleTrackEvent = (socktId, e) => {
+        if (!e.streams) return;
+        if (!remoteStreamsStore[socktId]) {
+            remoteStreamsStore[socktId] = e.streams[0];
+            forceUpdate()
+        }
     }
 
     const handleVideoAnswerMsg = async (data) => {
-        const {source, sdp} = data;
+        const { source, sdp } = data;
         const pc = getPeerConnection(source);
-        console.log("HANDLE", pc, source, sdp)
         await pc.setRemoteDescription(sdp);
-      //  await getLocalStream()
     }
 
     const handleICECandidateEvent = (socketId, e) => {
         if (e.candidate) {
-            console.log("*** Outgoing ICE candidate: " + e.candidate.candidate);
-
             sendToServer({
                 type: "new-ice-candidate",
                 source: me.socketId,
                 target: socketId,
                 candidate: e.candidate
             });
-         }
-        console.log('handleICECandidateEvent', e);
+        }
+    }
+
+    const removePeerConnection = (socketId) => {
+        delete peerConnectionsStore[socketId];
+        delete remoteStreamsStore[socketId];
+        forceUpdate()
     }
 
     const getPeerConnection = (socketId) => {
@@ -85,17 +107,16 @@ const Main = ({roomId, users}) => {
     }
 
     const handleNewICECandidateMsg = async (data) => {
-        const {source, candidate} = data;
+        const { source, candidate } = data;
         const pc = getPeerConnection(source);
         await pc.handleNewICECandidate(candidate);
 
     }
 
     const subscribe = () => {
-
         socket.on('videoChat', (msg) => {
             console.log('VIDEO_CHAT', msg)
-            switch(msg.type) {
+            switch (msg.type) {
                 case "video-offer":  // Invitation and offer to chat
                     answerCall(msg);
                     break;
@@ -114,57 +135,54 @@ const Main = ({roomId, users}) => {
             }
         })
 
-        socket.on('user:join', (data) => {
-           console.log('JOINNN', data)
-           const { socketId } = data;
-           //const pc = getPeerConnection(socketId);
-           startCall(socketId);
+        socket.on('user:leave', socketId => {
+            removePeerConnection(socketId);
         })
-    }
-    
 
-    const handleNeg = (socketId) => {
-        console.log('HANDLE NEG')
-        const pc = getPeerConnection(socketId)
-        if (pc.myPC.signalingState != "stable") {
-            console.log("     -- The connection isn't stable yet; postponing...")
-            return false
-          }
-      
-          // Establish the offer as the local peer's current
-          // description.
-      
-          console.log("---> Setting local description to the offer");
-          return startCall()
+        socket.on('user:join', (data) => {
+            const { socketId } = data;
+            startCall(socketId);
+        })
     }
 
     const getLocalStream = async () => {
-        const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
-        localVideo.current.srcObject = stream;
+        if (localStream) return;
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+       // localVideo.current.srcObject = stream;
         setLocalStream(stream);
-        Object.keys(peerConnectionsStore).map(key => peerConnectionsStore[key].addStream(stream))
-
+        return stream;
     }
 
     useEffect(() => {
         subscribe();
-        //sgetLocalStream()
+        getLocalStream()
         return () => {
-         //   cleanup
+            //   cleanup
         };
     }, []);
 
 
-
+    const renderRemoteStreams = (socketId) => {
+        const userName = users.find(u => u.socketId === socketId)?.userName || 'unkonwn';
+        return <Video
+            key={`video:${socketId}`}
+            videoId={`remoteStream:${socketId}`}
+            muted={true}
+            userName={userName}
+            stream={remoteStreamsStore[socketId]}
+        />
+    }
 
     return (
         <div>
-            <div>
-                <video autoPlay
-                    id='localVideo'
-                    muted 
-                    ref={localVideo}
-                />
+            <div className="videosContainer">
+                {localStream && <Video
+                    videoId={`localStream`}
+                    muted={true}
+                    userName={`${me.userName} (you)`}
+                    stream={localStream}
+                />}
+                {Object.keys(remoteStreamsStore).map(renderRemoteStreams)}
             </div>
         </div>
     )

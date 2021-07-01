@@ -8,10 +8,9 @@ import AuthContext from '../../stores/authContext';
 
 const Room = ({ roomInfo }) => {
     const [loggedInRoom, setLoggedInRoom] = useState(false);
-    const [users, setUsers] = useState(false);
     const { query } = useRouter();
     const { hasPassword, roomId } = roomInfo
-    const { enterRoom: contextEnterRoom } = useContext(AuthContext)
+    const { enterRoom: contextEnterRoom, setUsersInRoom, usersInRoom: users  } = useContext(AuthContext)
     const enterRoom = ({ userName, password }) => {
         socket.emit('enterRoom', { userName, password, roomId })
     }
@@ -19,7 +18,7 @@ const Room = ({ roomInfo }) => {
     const enterRoomResponse = ({ success, users, userName, socketId }) => {
         console.log('enterRoomResponse', { success, users, userName, socketId })
         if (success) {
-            contextEnterRoom({socketId, userName})
+            contextEnterRoom({socketId, userName}, roomId)
             setLoggedInRoom(true);
 
         }
@@ -28,7 +27,7 @@ const Room = ({ roomInfo }) => {
     const subscribe = () => {
         socket.on('enterRoom', enterRoomResponse);
         socket.on('users', (data) => {
-            setUsers(data)
+            setUsersInRoom(data)
         })
     }
 

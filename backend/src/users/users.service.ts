@@ -10,6 +10,14 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
+    async findOneById(id: string): Promise<any> {
+        const user = await this.userModel.findOne({
+            _id: id
+        })
+
+        return user
+    }
+
     async findOne(email: string): Promise<any> {
         const user = await this.userModel.findOne({
             email

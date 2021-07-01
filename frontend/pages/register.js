@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import useInput from "../components/hooks/useInput";
 // import axios from "axios";
 // import config from "../config";
@@ -8,12 +8,20 @@ import validateEmail from "../helpers/validateEmail";
 import axios from "axios";
 import config from "../config";
 import Header from "../components/header";
+import { PAGES } from "../stores/consts";
+import AuthContext from "../stores/authContext";
+
 const Register = () => {
     const router = useRouter();
     const email = useInput('');
     const userName = useInput('');
     const password1 = useInput('');
     const password2 = useInput('');
+    const { setActivePage } = useContext(AuthContext);
+
+    useEffect(() => {
+        setActivePage(PAGES.REGISTER);
+    }, []);
 
     const register = async () => {
         if (

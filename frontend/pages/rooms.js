@@ -1,12 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import config from '../config'
 import A from '../components/common/A'
 import { Button } from "@material-ui/core";
 import Header from '../components/header';
+import AuthContext from '../stores/authContext';
+import { PAGES } from '../stores/consts';
 
 const Rooms = ({ rooms }) => {
-    console.log(rooms)
+    const { setActivePage } = useContext(AuthContext);
+    console.log("AAAA", setActivePage)
+    useEffect(() => {
+        setActivePage(PAGES.ROOMS);
+    }, []);
     return (
         <div className="roomsWrapper">
             Rooms:

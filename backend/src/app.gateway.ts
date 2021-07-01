@@ -36,6 +36,7 @@ export class AppGateway {
         if (res) {
             const { users, roomId } = res;
             this.server.to(roomId).emit('users', users);
+            this.server.to(roomId).emit('user:leave', client.id);
         }
     }
 }

@@ -1,14 +1,19 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Input, Button, Checkbox } from "@material-ui/core";
 import useInput from "../components/hooks/useInput";
 import validateEmail from "../helpers/validateEmail";
 import Header from "../components/header";
 import AuthContext from "../stores/authContext";
+import { PAGES } from "../stores/consts";
 
 const Login = () => {
     const email = useInput('');
     const password = useInput('');
-    const { login } = useContext(AuthContext);
+    const { login, setActivePage } = useContext(AuthContext);
+
+    useEffect(() => {
+        setActivePage(PAGES.LOGIN);
+    }, []);
 
     const checkLoginData = async () => {
         if (email.value.length && password.value.length) {

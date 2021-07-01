@@ -1,8 +1,17 @@
 import A from "../components/common/A";
 import CreateRoom from "../components/CreateRoom";
 import Header from "../components/header";
+import { PAGES } from "../stores/consts";
+import AuthContext from "../stores/authContext";
+import { useContext, useEffect } from "react";
 
 const Index = () => {
+    const { setActivePage } = useContext(AuthContext);
+
+    useEffect(() => {
+        setActivePage(PAGES.INDEX);
+    }, []);
+
     return (
         <div className="mainContainerWrapper">
             <CreateRoom />

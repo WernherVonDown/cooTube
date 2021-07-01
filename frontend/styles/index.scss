@@ -79,3 +79,33 @@ body {
 .marginLeftRight {
     margin: 0 0.5rem !important;
 }
+
+.videosContainer {
+    display: flex;
+   // height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .videoWrapper {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+
+        video {
+            object-fit: cover;
+            height: fit-content;
+            width: 340px;
+        }
+    
+        .videoUserName {
+            background: white;
+            display: flex;
+            position: absolute;
+            bottom: 0;
+            padding: 0.2rem;
+        }
+    }
+}
+
