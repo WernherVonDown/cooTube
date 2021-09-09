@@ -1,0 +1,44 @@
+version: "3"
+services:
+  backend:
+    build: ./backend
+    tty: true
+    ports:
+      - "8080:8080"
+      - "1337:1337"
+    networks:
+      - nesjs-network
+    depends_on:
+      - db
+    container_name: backend
+  frontend:
+    build: ./frontend
+    ports:
+     - "3000:3000"
+    networks:
+      - nesjs-network
+    depends_on:
+     - backend
+    container_name: frontend
+  db:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=admin
+    ports:
+      - "27017:27017"
+    networks:
+      - nesjs-network
+    volumes:
+      - ./database:/data/db
+      # - ./data:/data/db
+      # - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      # - ./mongo-volume:/data/db
+    # command: mongod
+    container_name: mongo
+    restart: always
+
+networks:
+  nesjs-network:
+    driver: bridge
