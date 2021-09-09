@@ -32,7 +32,7 @@ const Register = () => {
         ) {
             if (validateEmail(email.value)) {
                 if (password1.value === password2.value) {
-                    const result = await axios.post(`${config.serverAdress}/register`, {
+                    const result = await axios.post(`${config.serverAdress}/auth/register`, {
                         email: email.value,
                         password: password1.value,
                         userName: userName.value

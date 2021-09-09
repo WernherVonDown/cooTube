@@ -76,7 +76,7 @@ const Header = ({ children, isRegister, isLogin }) => {
 
     const renderLeftSideButtons = () => {
         const leftSideButtons = getLeftSideButtons();
-        console.log('aaaaaaaaa', leftSideButtons)
+      //  console.log('aaaaaaaaa', leftSideButtons)
 
         return (
             <div className="navbar-buttonsWrapper">

@@ -8,7 +8,7 @@ import useForceUpdate from '../hooks/useForceUpdate';
 const peerConnectionsStore = {};
 const remoteStreamsStore = {}
 
-const Video = ({ videoId, stream, muted , userName}) => {
+const Video = ({ videoId, stream, muted, userName }) => {
     const videoRef = useRef();
     useEffect(() => {
         if (videoRef.current)
@@ -21,7 +21,7 @@ const Video = ({ videoId, stream, muted , userName}) => {
             <div className='videoUserName'>{userName}</div>
         </div>
     )
-    
+
 }
 
 const Main = ({ roomId, users }) => {
@@ -148,7 +148,7 @@ const Main = ({ roomId, users }) => {
     const getLocalStream = async () => {
         if (localStream) return;
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-       // localVideo.current.srcObject = stream;
+        // localVideo.current.srcObject = stream;
         setLocalStream(stream);
         return stream;
     }
@@ -173,17 +173,29 @@ const Main = ({ roomId, users }) => {
         />
     }
 
+    const remoteVideosLength = Object.keys(remoteStreamsStore).length;
+    const allVideosLength = localStream ? remoteVideosLength + 1 : remoteVideosLength;
+    const roundMinSqrt = Math.round(Math.sqrt(allVideosLength));
+    const param = roundMinSqrt ** 2 >= allVideosLength
+        ? { c: roundMinSqrt, r: roundMinSqrt }
+        : { c: roundMinSqrt + 1, r: roundMinSqrt }
+
     return (
-        <div>
-            <div className="videosContainer">
-                {localStream && <Video
-                    videoId={`localStream`}
-                    muted={true}
-                    userName={`${me.userName} (you)`}
-                    stream={localStream}
-                />}
-                {Object.keys(remoteStreamsStore).map(renderRemoteStreams)}
-            </div>
+        <div className="videosContainer"
+            style={
+                {
+                    gridTemplateColumns: `repeat(${param.c}, 1fr)`,
+                    gridTemplateRows: `repeat(${param.r}, 0fr)`,
+                    width: allVideosLength === 1 ? '90%' : '100%'
+                }
+            }>
+            {localStream && <Video
+                videoId={`localStream`}
+                muted={true}
+                userName={`${me.userName} (you)`}
+                stream={localStream}
+            />}
+            {Object.keys(remoteStreamsStore).map(renderRemoteStreams)}
         </div>
     )
     return (

@@ -1,4 +1,5 @@
+
 export default {
-    serverAdress: 'http://localhost:8080',
-    socketServer: 'http://localhost:1337'
+    serverAdress: process.env.SERVER_ADDR,
+    socketServer: process.env.SOCKET_ADDR
 }

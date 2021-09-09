@@ -4,6 +4,7 @@ import { LoginDto } from '../users/dto/login.dto';
 import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express'
+import { RegisterDto } from './dto/register.dto'
 
 @Controller('auth')
 export class AuthController {
@@ -37,16 +38,16 @@ export class AuthController {
         } else {
             result = await this.authService.validateUser(loginDto);
         }
-        console.log("RESULT LOGIN",result)
+        console.log("RESULT LOGIN", result)
         if (result) {
-            const { userName,  _id, email } = result;
+            const { userName, _id, email } = result;
             const jwt = await this.jwtService.signAsync({
                 _id,
                 userName,
                 email
             })
             response.cookie('jwt', jwt)
-            
+
             console.log('EEEE', userName)
             return {
                 success: true,

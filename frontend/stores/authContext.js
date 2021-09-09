@@ -24,7 +24,7 @@ export const AuthContextProvider = ({ children }) => {
     }, [])
 
     const login = async (email = null, password = null) => {
-        const result = await axios.post(`${config.serverAdress}/login`, {
+        const result = await axios.post(`${config.serverAdress}/auth/login`, {
             email,
             password
         }, {withCredentials: true,});

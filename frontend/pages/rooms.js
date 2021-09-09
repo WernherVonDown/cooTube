@@ -7,12 +7,24 @@ import Header from '../components/header';
 import AuthContext from '../stores/authContext';
 import { PAGES } from '../stores/consts';
 
-const Rooms = ({ rooms }) => {
-    const { setActivePage } = useContext(AuthContext);
-    console.log("AAAA", setActivePage)
-    useEffect(() => {
-        setActivePage(PAGES.ROOMS);
-    }, []);
+const Rooms = ({rooms}) => {
+  //  const { setActivePage } = useContext(AuthContext);
+    // const [rooms, setRooms] = useState([])
+    // console.log("AAAA", setActivePage)
+    // useEffect(async () => {
+    //     setActivePage(PAGES.ROOMS);
+    //     const fetchedRooms = await getRooms();
+    //     setRooms(fetchedRooms)
+
+    // }, []);
+
+    // const getRooms = async () => {
+    //     const res = await axios.get(`${config.serverAdress}/rooms`)
+    //     console.log('EEEEEEE', `${config.serverAdress}/rooms`, res?.data)
+    //     const data = res.data;
+    //     return data || []
+    // }
+
     return (
         <div className="roomsWrapper">
             Rooms:
@@ -32,11 +44,12 @@ const Rooms = ({ rooms }) => {
 
 export default Rooms;
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
     const res = await axios.get(`${config.serverAdress}/rooms`)
+    //const res = await axios.get(`http://backend:8080/rooms`)
     const data = res.data;
 
     return {
-        props: { rooms: data || [] }, // will be passed to the page component as props
+        props: { fallback: true, rooms: data || [] }, // will be passed to the page component as props
     }
 }

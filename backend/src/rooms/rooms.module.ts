@@ -14,13 +14,13 @@ import { User, UserSchema } from '../users/schemas/user.schema';
 @Module({
     imports: [
         MongooseModule.forFeature(
-            [{ name: Room.name, schema: RoomSchema }, { name: User.name, schema: UserSchema },]
+            [{ name: Room.name, schema: RoomSchema }]
         ),
-        forwardRef(() => AuthModule),
+      //  forwardRef(() => AuthModule),
         UsersModule
     ],
     controllers: [RoomController],
-    providers: [RoomsService, AppGateway, AuthService, UsersService],
+    providers: [RoomsService],
     exports: [RoomsService],
 })
 

@@ -4,11 +4,13 @@ import Header from "../components/header";
 import { PAGES } from "../stores/consts";
 import AuthContext from "../stores/authContext";
 import { useContext, useEffect } from "react";
+import config from "../config";
 
 const Index = () => {
     const { setActivePage } = useContext(AuthContext);
 
     useEffect(() => {
+        console.log('AAAAAAAAAAAAAAA', config)
         setActivePage(PAGES.INDEX);
     }, []);
 
